@@ -1,0 +1,43 @@
+{{ template "base" .}}
+
+{{ define "title"}}Home{{ end }}
+
+{{ define "body"}}
+    <h2>Latest Posts</h2>
+    <div class="btn-group" role="group" aria-label="Categories">
+
+        <a class="btn btn-primary" href="/">All</a>
+        {{range .Categories}}
+        <a class="btn btn-primary" href="/showposts?category={{.Name}}">{{.Name}}</a>
+        {{end}}
+        <!-- <form action="/showposts" method="get">
+            <input type="hidden" name="category" value="0">
+            <button type="submit" class="btn btn-primary">All</button>
+            {{range .Categories}}
+            <button type="submit" class="btn btn-primary">{{.Name}}</button>
+            {{end}}
+        </form> -->
+    </div>
+    {{if .Posts}}
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Created</th>
+            </tr>
+            {{range .Posts}}
+            <tr>
+                <td><a href="/post/{{.ID}}">{{.Title}}</a></td>
+                <td>{{.AuthorName}}</td>
+                <td>{{humanDate .CreatedAt}}</td>
+            </tr>
+            {{end}}
+        </table>
+    {{else}}
+        {{if .AuthenticatedUser}}
+        <p>There are no posts yet.</p>
+        {{else}}
+        <p>You have a chance to make first post in this Forum!</p>
+        {{end}}
+    {{end}}
+{{end}}

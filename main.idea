@@ -1,0 +1,11 @@
+1.SQLite database
+2.Ability to authenticate user(Registration, Login, Logout)
+3.Create login session and use UUID as token, store token in cookies
+4.Ability to create posts, write comments and give likes to posts and comments
+5.Ability to update posts
+6.Categories for posts
+7.Pagination
+8.SMTP for email activation and password reset
+9.Filtering of posts by category, by date of creation and by likes
+10.Home page for user
+11.Avatar for user and pictures for posts
