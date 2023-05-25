@@ -32,7 +32,7 @@ func Run(cfg *config.Config) {
 		log.PrintFatal(err)
 	}
 
-	handler := handler.NewHandler(service, templateCache)
+	handler := handler.NewHandler(service, templateCache, cfg.GoogleConfig, cfg.GithubConfig)
 	log.PrintInfo("Connected to Handler")
 
 	fmt.Println("Server is running on port", cfg.Addr)

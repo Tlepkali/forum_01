@@ -9,20 +9,26 @@
             <strong class="left">{{.Title}}</strong>
             <span class="right">#{{.ID}}</span>
         </div>
-        <pre>{{.Content}}</pre>
+        {{if eq (len .ImagePath) 0 }}
+        {{else}}
+        <div class="post-img">
+            <img class="post-img_source" src="{{.ImagePath}}" alt="image">
+        </div>
+        {{end}}
+            <pre>{{.Content}}</pre>
         <div class='metadata'>
             <span>
                 <form method="POST" action="/post/vote/create">
                     <input type="hidden" name="post_id" value="{{.ID}}">
                     <input type="hidden" name="status" value=1>
-                    <button type="submit"><img src="/static/img/thumb-up.svg" style="width: 30px ;" alt="like button"> {{.Likes}}  </button>
+                    <button type="submit"><img src="/static/assets/thumb-up.svg" style="width: 30px ;" alt="like button"> {{.Likes}}  </button>
                 </form>
             </span>
             <span>
                 <form method="POST" action="/post/vote/create">
                     <input type="hidden" name="post_id" value="{{.ID}}">
                     <input type="hidden" name="status" value=0>
-                    <button type="submit"><img src="/static/img/thumb-down.svg" style="width: 30px ;" alt="dislike button"> {{.Dislikes}}</button>
+                    <button type="submit"><img src="/static/assets/thumb-down.svg" style="width: 30px ;" alt="dislike button"> {{.Dislikes}}</button>
                 </form>
             </span>
             <div class="time-post">
@@ -55,7 +61,7 @@
                             <input type="hidden" name="post_id" value="{{.PostID}}">
                             <input type="hidden" name="comment_id" value="{{.ID}}">
                             <input type="hidden" name="status" value=1>
-                            <button type="submit"><img src="/static/img/thumb-up.svg" style="width: 25px ;" alt="like button"> {{.Likes}}</button>
+                            <button type="submit"><img src="/static/assets/thumb-up.svg" style="width: 25px ;" alt="like button"> {{.Likes}}</button>
                         </form>
                     </span>
                     <span>
@@ -63,7 +69,7 @@
                             <input type="hidden" name="post_id" value="{{.PostID}}">
                             <input type="hidden" name="comment_id" value="{{.ID}}">
                             <input type="hidden" name="status" value=0>
-                            <button type="submit"><img src="/static/img/thumb-down.svg" style="width: 25px ;" alt="dislike button"> {{.Dislikes}}</button>
+                            <button type="submit"><img src="/static/assets/thumb-down.svg" style="width: 25px ;" alt="dislike button"> {{.Dislikes}}</button>
                         </form>
                     </span>
                     

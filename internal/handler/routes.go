@@ -20,6 +20,11 @@ func (h *Handler) Routes(cfg *config.Config) http.Handler {
 	mux.HandleFunc("/user/login", h.login)
 	mux.Handle("/user/logout", h.requireAuthentication(http.HandlerFunc(h.logout)))
 
+	mux.HandleFunc("/google/callback", h.handleGoogleCallback)
+	mux.HandleFunc("/google/login", h.handleGoogleLogin)
+	mux.HandleFunc("/github/login", h.handleGithubLogin)
+	mux.HandleFunc("/github/callback", h.handleGithubCallback)
+
 	mux.Handle("/post/create", h.requireAuthentication(http.HandlerFunc(h.createPost)))
 	mux.HandleFunc("/post/", h.showPost)
 

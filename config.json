@@ -4,5 +4,15 @@
         "dsn": "forum.sqlite3?parseTime=true"
     },
     "static_dir": "./ui/static",
-    "template_dir": "./ui/templates"
+    "template_dir": "./ui/templates",
+    "google_config": {
+        "client_id": "575408325309-c95fcs7c0jd33thu6piqfj9hatcl2uv6.apps.googleusercontent.com",
+        "client_secret": "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",
+        "redirect_url": "http://localhost:8080/google/callback"
+    },
+    "github_config": {
+        "client_id": "974f85c461043e37470e",
+        "client_secret": "3ab9f834b15da1b343f5a68b54b0cd8e70767c5f",
+        "redirect_url": "http://localhost:8080/github/callback"
+    }
 }

@@ -1,7 +1,7 @@
-ERROR	2023/04/30 23:35:23 logger.go:53: no such table: post
-tination arguments in Scan, not 7
-ERROR	2023/04/30 20:50:43 logger.go:53: sql: expected 10 destination arguments in Scan, not 7
-ERROR	2023/04/30 17:40:28 logger.go:53: asdasd
+ERROR	2023/05/09 23:48:17 logger.go:53: runtime error: invalid memory address or nil pointer dereference
+5/07 18:19:15 logger.go:53: sql: expected 9 destination arguments in Scan, not 8
+alid syntax
+/04/30 17:40:28 logger.go:53: asdasd
  get cookie: http: named cookie not present
 ERROR	2023/04/30 07:06:20 logger.go:53: failed to get cookie: http: named cookie not present
 ERROR	2023/04/30 07:06:20 logger.go:53: failed to get cookie: http: named cookie not present

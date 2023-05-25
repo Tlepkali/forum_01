@@ -98,7 +98,7 @@ func (s *PostStorage) GetLikedPosts(userID int) ([]*models.Post, error) {
 
 func (s *PostStorage) CreatePost(p *models.Post) (int, error) {
 	query := `INSERT INTO post (title, content, author_id, authorname, created_at, updated_at, version) 
-	VALUES ($1, $2, $3, $4, $5, $6, $7) 
+	VALUES ($1, $2, $3, $4, $5, $6, $7)
 	RETURNING id, created_at, updated_at, version`
 
 	args := []interface{}{p.Title, p.Content, p.AuthorID, p.AuthorName, p.CreatedAt, p.UpdatedAt, p.Version}
@@ -118,6 +118,40 @@ func (s *PostStorage) CreatePost(p *models.Post) (int, error) {
 		if err != nil {
 			return 0, err
 		}
+	}
+
+	return p.ID, nil
+}
+
+func (s *PostStorage) CreatePostWithImage(p *models.Post) (int, error) {
+	query := `INSERT INTO post (title, content, author_id, authorname, created_at, updated_at, version) 
+	VALUES ($1, $2, $3, $4, $5, $6, $7) 
+	RETURNING id, created_at, updated_at, version`
+
+	args := []interface{}{p.Title, p.Content, p.AuthorID, p.AuthorName, p.CreatedAt, p.UpdatedAt, p.Version, p.ImagePath}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	err := s.db.QueryRowContext(ctx, query, args...).Scan(&p.ID, &p.CreatedAt, &p.UpdatedAt, &p.Version)
+	if err != nil {
+		return 0, err
+	}
+
+	// Create post_categories entries
+	for _, category := range p.Categories {
+		query = `INSERT INTO post_categories (post_id, category_name) VALUES ($1, $2)`
+		_, err = s.db.ExecContext(ctx, query, p.ID, category.Name)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	// Create image entry
+	query = `INSERT INTO images (post_id, image_path) VALUES ($1, $2)`
+	_, err = s.db.ExecContext(ctx, query, p.ID, p.ImagePath)
+	if err != nil {
+		return 0, err
 	}
 
 	return p.ID, nil
@@ -175,6 +209,21 @@ func (s *PostStorage) GetPostByID(id int) (*models.Post, error) {
 
 	if err := rows.Err(); err != nil {
 		return nil, err
+	}
+
+	// Get post image
+	query = `SELECT image_path FROM images WHERE post_id = $1`
+	row := s.db.QueryRowContext(ctx, query, id)
+
+	err = row.Scan(&post.ImagePath)
+	if err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			post.ImagePath = ""
+			return post, nil
+		default:
+			return nil, err
+		}
 	}
 
 	return post, nil

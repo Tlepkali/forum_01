@@ -19,7 +19,10 @@ func NewSessionService(repo models.SessionRepo) *SessionService {
 func (s *SessionService) CreateSession(userID int) (*models.Session, error) {
 	oldSession, _ := s.repo.GetSessionByUserID(userID)
 	if oldSession != nil {
-		return nil, models.ErrSessionAlreadyExists
+		err := s.repo.DeleteSessionByUUID(oldSession.UUID)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	uuid, err := uuid.NewV4()

@@ -62,15 +62,8 @@ func (h *Handler) login(w http.ResponseWriter, r *http.Request) {
 
 	session, err := h.service.SessionService.CreateSession(userID)
 	if err != nil {
-		switch err {
-		case models.ErrSessionAlreadyExists:
-			form.Errors.Add("generic", "Session already exists")
-			w.WriteHeader(http.StatusBadRequest)
-			h.templateCache.Render(w, r, "login.page.html", &render.PageData{
-				Form: form,
-			})
-			return
-		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	cookies.SetCookie(w, session.UUID, int(time.Until(session.ExpireAt).Seconds()))

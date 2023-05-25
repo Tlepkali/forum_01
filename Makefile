@@ -12,6 +12,7 @@ migrate: silent
 	sqlite3 forum.sqlite3 < migrations/07_insert_categories.sql
 	sqlite3 forum.sqlite3 < migrations/08_add_post_categories.sql
 	sqlite3 forum.sqlite3 < migrations/09_add_comment_vote_table.sql
+	sqlite3 forum.sqlite3 < migrations/10_add_image_table.sql
 drop: silent
 	sqlite3 forum.sqlite3 < migrations/00_drop_all_tables.sql
 

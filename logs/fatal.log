@@ -1,1 +1,2 @@
-FATAL	2023/04/30 21:05:50 logger.go:55: template: register.page.html:11: bad character U+007D '}'
+FATAL	2023/05/09 23:52:20 logger.go:55: template: create.page.html:28: bad character U+007D '}'
+'

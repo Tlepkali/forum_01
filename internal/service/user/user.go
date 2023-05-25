@@ -76,7 +76,7 @@ func (u *UserService) LoginUser(userDTO *models.LoginUserDTO) (int, error) {
 }
 
 func (u *UserService) GetUserByEmail(email string) (*models.User, error) {
-	return nil, nil
+	return u.repo.GetUserByEmail(email)
 }
 
 func (u *UserService) UpdateUser(user *models.UpdateUserDTO) error {

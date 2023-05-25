@@ -16,7 +16,7 @@ func (h *Handler) createPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
-		err := r.ParseForm()
+		err := r.ParseMultipartForm(32 << 20)
 		if err != nil {
 			h.logger.PrintError(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -101,7 +101,57 @@ func (h *Handler) createPost(w http.ResponseWriter, r *http.Request) {
 			Categories: categories,
 		}
 
-		id, err := h.service.PostService.CreatePost(post)
+		file, fileHeader, err := r.FormFile("image")
+		if err != nil {
+			if err != http.ErrMissingFile {
+				h.logger.PrintError(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			post.ImageFile = nil
+		} else {
+			post.ImageFile = file
+			defer file.Close()
+
+			fileType := fileHeader.Header.Get("Content-Type")
+			if !form.IsImage(fileType) {
+				categories, err := h.service.CategoryService.GetAllCategories()
+				if err != nil {
+					h.logger.PrintError(err)
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				form.Errors.Add("image", "File is not an image")
+				form.Categories = append(form.Categories, categories...)
+				w.WriteHeader(http.StatusBadRequest)
+				h.templateCache.Render(w, r, "create.page.html", &render.PageData{
+					Form:              form,
+					AuthenticatedUser: h.getUserFromContext(r),
+				})
+				return
+			}
+
+			if fileHeader.Size > 5*1024*1024 {
+				categories, err := h.service.CategoryService.GetAllCategories()
+				if err != nil {
+					h.logger.PrintError(err)
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				form.Categories = append(form.Categories, categories...)
+				form.Errors.Add("image", "File is too big")
+				w.WriteHeader(http.StatusRequestEntityTooLarge)
+				h.templateCache.Render(w, r, "create.page.html", &render.PageData{
+					Form:              form,
+					AuthenticatedUser: h.getUserFromContext(r),
+				})
+				return
+			}
+		}
+
+		id, err := h.service.PostService.CreatePostWithImage(post)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

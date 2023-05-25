@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"mime/multipart"
+	"time"
+)
 
 type Post struct {
 	ID         int         `json:"id"`
@@ -15,14 +18,17 @@ type Post struct {
 	Comments   []*Comment  `json:"comments"`
 	Likes      int         `json:"likes"`
 	Dislikes   int         `json:"dislikes"`
+	ImagePath  string      `json:"image_path"`
+	Image      []byte      `json:"image"`
 }
 
 type CreatePostDTO struct {
-	Title      string      `json:"title"`
-	Content    string      `json:"content"`
-	Author     int         `json:"author"`
-	AuthorName string      `json:"authorname"`
-	Categories []*Category `json:"category"`
+	Title      string         `json:"title"`
+	Content    string         `json:"content"`
+	Author     int            `json:"author"`
+	AuthorName string         `json:"authorname"`
+	Categories []*Category    `json:"category"`
+	ImageFile  multipart.File `json:"imagefile"`
 }
 
 type UpdatePostDTO struct {
@@ -37,6 +43,7 @@ type DeletePostDTO struct {
 
 type PostService interface {
 	CreatePost(post *CreatePostDTO) (int, error)
+	CreatePostWithImage(post *CreatePostDTO) (int, error)
 	GetAllPosts(offset, limit int) ([]*Post, error)
 	GetLikedPosts(userID int) ([]*Post, error)
 	GetPostByID(id int) (*Post, error)
@@ -49,6 +56,7 @@ type PostService interface {
 
 type PostRepo interface {
 	CreatePost(post *Post) (int, error)
+	CreatePostWithImage(post *Post) (int, error)
 	GetAllPosts(offset, limit int) ([]*Post, error)
 	GetLikedPosts(userID int) ([]*Post, error)
 	GetPostByID(id int) (*Post, error)

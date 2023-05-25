@@ -32,7 +32,7 @@ section {
 h1 a {
   font-size: 36px;
   font-weight: bold;
-  background-image: url("/static/img/forum.png");
+  background-image: url("/static/assets/forum.png");
   background-repeat: no-repeat;
   background-position: 0px 4px;
   height: 36px;
@@ -177,9 +177,9 @@ form div {
   margin-bottom: 18px;
 }
 
-form div:last-child {
+/* form div:last-child {
   border-top: 1px dashed #7e7e7e76;
-}
+} */
 
 form input[type="radio"] {
   position: relative;
@@ -386,3 +386,36 @@ footer {
   border-radius:2%;  
 }
 
+.post-img {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.post-img_source {
+  max-width: 100%;
+}
+
+.logo_sso {
+  margin-top: 10px;
+  display: flex;
+  width: 100%;
+}
+
+.logo_sso_img {
+  height: 40px;
+  width: 40px;
+  margin-right: 0.5em;
+}
+
+.logo_sso_button {
+  background-color: #0069d9;
+  color: #ffffff;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  border-radius: 15px;
+  padding: 0.5em;
+  margin: 0.5em;
+  margin-left: -2px;
+}

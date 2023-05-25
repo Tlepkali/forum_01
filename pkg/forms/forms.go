@@ -2,6 +2,7 @@ package forms
 
 import (
 	"fmt"
+	"mime/multipart"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -14,10 +15,13 @@ import (
 var EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}" +
 	"[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
+const AllowedTypes = "image/jpeg,image/png,image/gif,image/jpg,image/webp"
+
 type Form struct {
 	url.Values
 	Errors     errors
 	Categories []*models.Category
+	FileHeader *multipart.FileHeader
 }
 
 func New(data url.Values) *Form {
@@ -25,6 +29,7 @@ func New(data url.Values) *Form {
 		data,
 		errors(map[string][]string{}),
 		[]*models.Category{},
+		nil,
 	}
 }
 
@@ -107,4 +112,8 @@ func (f *Form) IsStatus(field string) uint8 {
 	}
 
 	return uint8(value)
+}
+
+func (f *Form) IsImage(fileType string) bool {
+	return strings.Contains(AllowedTypes, fileType)
 }

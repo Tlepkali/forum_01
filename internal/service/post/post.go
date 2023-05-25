@@ -1,9 +1,13 @@
 package post
 
 import (
+	"io/ioutil"
+	"strings"
 	"time"
 
 	"forum/internal/models"
+
+	"github.com/gofrs/uuid"
 )
 
 type PostService struct {
@@ -25,7 +29,42 @@ func (p *PostService) CreatePost(postDTO *models.CreatePostDTO) (int, error) {
 		UpdatedAt:  time.Now(),
 		Version:    1,
 	}
-	id, err := p.repo.CreatePost(post)
+	return p.repo.CreatePost(post)
+}
+
+func (p *PostService) CreatePostWithImage(postDTO *models.CreatePostDTO) (int, error) {
+	if postDTO.ImageFile == nil {
+		return p.CreatePost(postDTO)
+	}
+
+	data, err := ioutil.ReadAll(postDTO.ImageFile)
+	if err != nil {
+		return 0, err
+	}
+
+	fileName, err := uuid.NewV4()
+	if err != nil {
+		return 0, err
+	}
+	filePath := "ui/static/img/" + fileName.String()
+
+	post := &models.Post{
+		Title:      postDTO.Title,
+		Content:    postDTO.Content,
+		AuthorID:   postDTO.Author,
+		AuthorName: postDTO.AuthorName,
+		Categories: postDTO.Categories,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+		Version:    1,
+		ImagePath:  filePath,
+	}
+	id, err := p.repo.CreatePostWithImage(post)
+	if err != nil {
+		return 0, err
+	}
+
+	err = ioutil.WriteFile(filePath, data, 0o666)
 	if err != nil {
 		return 0, err
 	}
@@ -46,6 +85,12 @@ func (p *PostService) GetPostByID(id int) (*models.Post, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	if post.ImagePath == "" {
+		return post, nil
+	}
+
+	post.ImagePath = ".." + strings.TrimPrefix(post.ImagePath, "ui")
 
 	return post, nil
 }
